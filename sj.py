@@ -1,12 +1,8 @@
 #!/usr/bin/python3
 """
-
-"""
-
-"""
 File: sj.py
 Author: Murima
-Github: https://github.com/yourname
+Github: https://github.com/murima
 Description: super Jump to any directory in the filesystem without a full or relative path
 """
 
@@ -18,14 +14,21 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy import Table,Column,Integer,String,MetaData
 from sqlalchemy.orm import mapper,sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 
-class FileSystem(object):
+Base = declarative_base()
 
-    """mapped class to the database"""
+class FileSystem(Base):
+    __tablename__ = 'filesystem'
+    id = Column(Integer,primary_key=True)
+    path = Column (String(500))
+    file = Column (String(250))
 
-    def __init__(self, added_path):
-        """initialize the path and file
+
+
+                        def __init__(self, added_path):
+                            """initialize the path and file
 
         :path: TODO
         :file: TODO
@@ -33,45 +36,45 @@ class FileSystem(object):
         """
         self.path = added_path
 
-    #d = os.path.expanduser('~')
+        #d = os.path.expanduser('~')
         #self.file = file
 
-    def __repr__(self):
-        return "[FileSystem {}]".format(self.path)
+        def __repr__(self):
+            return "[FileSystem {}]".format(self.path)
 
-def populate_database():
-    """
+        def populate_database():
+            """
     Populate the database with the files and
     paths
     """
-engine=create_engine("sqlite:///sql_filesystem.db")
-#engine.raw_connection().connection.text_factory = str
-#create metadata
-metadata=MetaData()
+    engine=create_engine("sqlite:///sql_filesystem.db")
+    #engine.raw_connection().connection.text_factory = str
+    #create metadata
+    metadata=MetaData()
 
-file_systemtable=Table('filesystem',metadata
-        ,Column('id',Integer,primary_key=True)\
-                ,Column ('path',String(500))\
-                ,Column ('file',String(250))\
-                )
-#creates database from the data stored in metadata
-metadata.create_all(engine)
-#maps the class to the database
-mapper(FileSystem,file_systemtable)
+    file_systemtable=Table('filesystem',metadata
+            ,Column('id',Integer,primary_key=True)\
+                    ,Column ('path',String(500))\
+                    ,Column ('file',String(250))\
+                    )
+    #creates database from the data stored in metadata
+    metadata.create_all(engine)
+    #maps the class to the database
+    mapper(FileSystem,file_systemtable)
 
-#create a session using sessionmaker
-Session=sessionmaker(bind=engine, autoflush=True)
-session=Session()
-base_path=os.path.expanduser('~')
-for dirpath, dirnames, filnames in os.walk(unicode(base_path)):
+    #create a session using sessionmaker
+    Session=sessionmaker(bind=engine, autoflush=True)
+    session=Session()
+    base_path=os.path.expanduser('~')
+    for dirpath, dirnames, filnames in os.walk(unicode(base_path)):
 
-    #fullpath=os.path.join(dirpath)
- #get record from filesystem class return statement
-        record=FileSystem(dirpath)
- #add the record object to the database
-        session.add(record)
- #commit the changes to close the database
-session.commit()
+        #fullpath=os.path.join(dirpath)
+    #get record from filesystem class return statement
+    record=FileSystem(dirpath)
+    #add the record object to the database
+    session.add(record)
+                    #commit the changes to close the database
+    session.commit()
 
 #for record in session.query(FileSystem):
 #        print (record.file)
@@ -79,11 +82,11 @@ session.commit()
         #       "Learning Parseltongue- Wizardry in Python.mp4").first())
 
 
-    #d = os.path.expanduser('~')
+        #d = os.path.expanduser('~')
 
 
 #create the database
-def find_name(path_name):
+def find_name(path_name, session):
     ''' list all paths and sub-directories from home'''
     #tree = []
     #new_path = ''
@@ -98,4 +101,5 @@ if __name__ == '__main__':
     #d = os.path.expanduser('~')
     #self.populate_database()
     find_path=sys.argv[1]
-    find_name(find_path)
+    session_find= Session()
+    find_name(find_path, session_find)
