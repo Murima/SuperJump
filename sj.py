@@ -20,86 +20,54 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class FileSystem(Base):
+    """
+    class to store the paths of the directories
+    """
     __tablename__ = 'filesystem'
     id = Column(Integer,primary_key=True)
     path = Column (String(500))
-    file = Column (String(250))
+
+    def __repr__(self):
+        return "<FileSystem {}, {}]".format(self.path)
 
 
 
-                        def __init__(self, added_path):
-                            """initialize the path and file
-
-        :path: TODO
-        :file: TODO
-
-        """
-        self.path = added_path
-
-        #d = os.path.expanduser('~')
-        #self.file = file
-
-        def __repr__(self):
-            return "[FileSystem {}]".format(self.path)
-
-        def populate_database():
+    def populate_database():
             """
     Populate the database with the files and
     paths
     """
-    engine=create_engine("sqlite:///sql_filesystem.db")
-    #engine.raw_connection().connection.text_factory = str
-    #create metadata
-    metadata=MetaData()
-
-    file_systemtable=Table('filesystem',metadata
-            ,Column('id',Integer,primary_key=True)\
-                    ,Column ('path',String(500))\
-                    ,Column ('file',String(250))\
-                    )
-    #creates database from the data stored in metadata
-    metadata.create_all(engine)
-    #maps the class to the database
-    mapper(FileSystem,file_systemtable)
-
-    #create a session using sessionmaker
-    Session=sessionmaker(bind=engine, autoflush=True)
-    session=Session()
     base_path=os.path.expanduser('~')
     for dirpath, dirnames, filnames in os.walk(unicode(base_path)):
 
-        #fullpath=os.path.join(dirpath)
-    #get record from filesystem class return statement
-    record=FileSystem(dirpath)
-    #add the record object to the database
-    session.add(record)
+        record=FileSystem(dirpath)
+        #add the record object to the database
+        session.add(record)
                     #commit the changes to close the database
     session.commit()
 
-#for record in session.query(FileSystem):
-#        print (record.file)
-#print(session.query(FileSystem).filter_by(file=\
-        #       "Learning Parseltongue- Wizardry in Python.mp4").first())
-
-
-        #d = os.path.expanduser('~')
-
 
 #create the database
-def find_name(path_name, session):
-    ''' list all paths and sub-directories from home'''
-    #tree = []
-    #new_path = ''
-    print(session.query(FileSystem).filter_by(path=path_name).first())
-    print("hello")
+    def find_name(path_name, session):
+        ''' list all paths and sub-directories from home'''
+        #tree = []
+        #new_path = ''
+        print(session.query(FileSystem).filter_by(path=path_name).first())
+        print("hello")
 
-def change_dir(path):
-    ''' prints the path of the directory found in tree and changes to the DIR'''
-    print(path)
+    def change_dir(path):
+        ''' prints the path of the directory found in tree and changes to the DIR'''
+        print(path)
 
 if __name__ == '__main__':
     #d = os.path.expanduser('~')
     #self.populate_database()
+    
+    engine=create_engine("sqlite:///sql_filesystem.db")
+    Session=sessionmaker(bind=engine, autoflush=True)
+    session=Session()
+
     find_path=sys.argv[1]
     session_find= Session()
+    A
     find_name(find_path, session_find)
