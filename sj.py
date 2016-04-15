@@ -5,7 +5,6 @@ Author: Murima
 Github: https://github.com/murima
 Description: super Jump to any directory in the filesystem without a full or relative path
 """
-
 import sys
 import os
 import argparse
@@ -28,43 +27,49 @@ class FileSystem(Base):
     path = Column (String(500))
 
     def __repr__(self):
-        return "<FileSystem {}]".format(self.path)
+        return "<FileSystem {}>".format(self.path)
 
 
 
     def populate_database(self, session_populate):
-            """
-    Populate the database with the files and
-    paths
-    """
-    base_path=os.path.expanduser('~')
-    for dirpath, dirnames, filnames in os.walk(unicode(base_path)):
+        """
+        Populate the database with the files and
+        paths
+        """
+        base_path=os.path.expanduser('~')
+        for dirpath, dirnames, filnames in os.walk(unicode(base_path)):
 
-        record= __repr__(dirpath)
-        #add the record object to the database
-        session.add(record)
-                    #commit the changes to close the database
-    session.commit()
+            record=FileSystem()
+            #add the record object to the database
+            session_populate.add(record)
+                        #commit the changes to close the database
+        session_populate.commit()
 
 
 #create the database
-    def find_name(path_name, session):
+    def find_name(self, path_name, session):
         ''' list all paths and sub-directories from home'''
         #tree = []
         #new_path = ''
         print(session.query(FileSystem).filter_by(path=path_name).first())
 
-    def change_dir(path):
+    def change_dir(self, path):
         ''' prints the path of the directory found in tree and changes to the DIR'''
         print(path)
 
 if __name__ == '__main__':
     #d = os.path.expanduser('~')
-    #self.populate_database()
     parser = argparse.ArgumentParser(description = 'small app that super jumps to any path in any level of the file system')
+    parser.add_argument('-r', action='store_true', default=False, dest='populate')
+    parser.add_argument('-p', action='store', dest='path')
+    arg= parser.parse_args()
 
-    find_path=sys.argv[1]
+    filesys= FileSystem()
     engine=create_engine("sqlite:///sql_filesystem.db")
     Session=sessionmaker(bind=engine, autoflush=True)
     session=Session()
-    find_name(find_path, session_find)
+    find_path= arg.path
+    if arg.populate == True:
+        filesys.populate_database(session)
+
+    filesys.find_name(find_path, session)
