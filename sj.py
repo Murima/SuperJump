@@ -1,14 +1,13 @@
-#!/usr/bin/python3
+#!/usr/bin/python2.7
 """
 File: sj.py
 Author: Murima
 Github: https://github.com/murima
 Description: super Jump to any directory in the filesystem without a full or relative path
 """
-import sys
 import os
 import argparse
-
+import sys
 
 from sqlalchemy import create_engine
 from sqlalchemy import Column,Integer,String
@@ -37,18 +36,20 @@ class FileSystem(Base):
         paths
         """
         base_path=os.path.expanduser('~')
-        for dirpath, dirnames, filnames in os.walk(unicode(base_path)):
+        for dirpath, dirnames, filnames in os.walk(base_path):
 
             record=FileSystem()
             #add the record object to the database
             session_populate.add(record)
                         #commit the changes to close the database
         session_populate.commit()
+        print('database repopulated')
+        sys.exit()
 
 
 #create the database
     def find_name(self, path_name, session):
-        ''' list all paths and sub-directories from home'''
+        ''' find the name of the path specified from the local db'''
         #tree = []
         #new_path = ''
         print(session.query(FileSystem).filter_by(path=path_name).first())
