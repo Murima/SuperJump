@@ -35,10 +35,11 @@ class FileSystem(Base):
         Populate the database with the files and
         paths
         """
+        
         base_path=os.path.expanduser('~')
         for dirpath, dirnames, filnames in os.walk(base_path):
 
-            record=FileSystem()
+            record=FileSystem(path=unicode(dirpath, 'utf8'))
             #add the record object to the database
             session_populate.add(record)
                         #commit the changes to close the database
@@ -52,7 +53,7 @@ class FileSystem(Base):
         ''' find the name of the path specified from the local db'''
         #tree = []
         #new_path = ''
-        print(session.query(FileSystem).filter_by(path=path_name).first())
+        print(session.query(FileSystem).filter(FileSystem.path.endswith(path_name)).all())
 
     def change_dir(self, path):
         ''' prints the path of the directory found in tree and changes to the DIR'''
@@ -71,6 +72,7 @@ if __name__ == '__main__':
     session=Session()
     find_path= arg.path
     if arg.populate == True:
+        Base.metadata.create_all(engine)
         filesys.populate_database(session)
 
     filesys.find_name(find_path, session)
