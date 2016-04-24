@@ -55,11 +55,25 @@ class FileSystem(Base):
         #tree = []
         #new_path = ''
         found_path = session.query(FileSystem).filter(FileSystem.path.endswith(path_name)).first()
-        if found_path != '[]':
+        if found_path != None:
             output = str(found_path)
-            cls_name, output = output.split(' ')
-            new_path = re.sub('>', '', output)
-            print(new_path)
+            try:
+
+                cls_name, output = output.split(' ')
+                new_path = re.sub('>', '', output)
+
+                print(new_path)
+            except ValueError:
+                path_obj = re.match('(<FileSystem)(.*)(\W)', output)
+                new_path = path_obj.group(2)
+                stripped_path = new_path.lstrip()
+                processed_path = re.sub(' ', '\ ', stripped_path)
+                print(processed_path)
+
+
+
+        else:
+            print ('path not found')
 
 
     def change_dir(self, path):
@@ -74,7 +88,7 @@ if __name__ == '__main__':
     arg= parser.parse_args()
 
     filesys= FileSystem()
-    engine=create_engine("sqlite:///sql_filesystem.db")
+    engine=create_engine("sqlite:////home/killer/sql_filesystem.db")
     Session=sessionmaker(bind=engine, autoflush=True)
     session=Session()
     find_path= arg.path
