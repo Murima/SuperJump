@@ -8,6 +8,7 @@ Description: super Jump to any directory in the filesystem without a full or rel
 import os
 import argparse
 import sys
+import re
 
 from sqlalchemy import create_engine
 from sqlalchemy import Column,Integer,String
@@ -35,7 +36,7 @@ class FileSystem(Base):
         Populate the database with the files and
         paths
         """
-        
+
         base_path=os.path.expanduser('~')
         for dirpath, dirnames, filnames in os.walk(base_path):
 
@@ -53,7 +54,13 @@ class FileSystem(Base):
         ''' find the name of the path specified from the local db'''
         #tree = []
         #new_path = ''
-        print(session.query(FileSystem).filter(FileSystem.path.endswith(path_name)).all())
+        found_path = session.query(FileSystem).filter(FileSystem.path.endswith(path_name)).first()
+        if found_path != '[]':
+            output = str(found_path)
+            cls_name, output = output.split(' ')
+            new_path = re.sub('>', '', output)
+            print(new_path)
+
 
     def change_dir(self, path):
         ''' prints the path of the directory found in tree and changes to the DIR'''
