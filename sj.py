@@ -67,8 +67,7 @@ class FileSystem(Base):
                 path_obj = re.match('(<FileSystem)(.*)(\W)', output)
                 new_path = path_obj.group(2)
                 stripped_path = new_path.lstrip()
-                processed_path = re.sub(' ', '\ ', stripped_path)
-                print(processed_path)
+                print(stripped_path)
 
 
 
