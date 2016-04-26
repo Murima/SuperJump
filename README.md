@@ -10,8 +10,8 @@ sql_filesystem.db and queries for the directory specified in this database.
 
 Options
 =======
-*-p specify the path you want to jump to
-*-r reload the database to get recently added directories
+* -p specify the path you want to jump to
+* -r reload the database to get recently added directories
 
 Usage
 =======
@@ -20,8 +20,9 @@ then add this to your .bashrc
 
   :`function sj(){
   cd "$(sj.py -p $1 $2)" 
-  }
-`
+  }`
+
+
 Now you need to populate the database with the file system folders, do this by providing the -r option
 
   : `sj -r`
