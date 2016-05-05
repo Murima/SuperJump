@@ -6,7 +6,8 @@ without specifying the full path to the directory
 
 would change to the directory even if it's several sub-directories deep. It uses 
 ORM functionality in sqlalchemy to map the local database to the class. Creates a local database
-sql_filesystem.db and queries for the directory specified in this database.
+sql_filesystem.db and queries for the directory specified in this database. To install sqlalchemy
+ `pip install sqlalchemy` should do the trick.
 
 Options
 =======
