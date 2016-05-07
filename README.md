@@ -19,12 +19,12 @@ In order to use this app you have to place it in /usr/local/bin or in a folder t
 then add this to your .bashrc  
 
   :`function sj(){
-output="$( sj.py $1 $2)"
-if [ -d "$output" ]; then
-	cd $output
-else
-	echo $output
-fi
+  output="$( sj.py $1 $2)"
+    if [ -d "$output" ]; then
+        	cd $output
+    else
+        	echo $output
+    fi
 
 
   }`
