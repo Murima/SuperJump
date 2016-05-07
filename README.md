@@ -18,7 +18,7 @@ Usage
 In order to use this app you have to place it in /usr/local/bin or in a folder thets in your path
 then add this to your .bashrc  
 
-  :`function sj(){
+  :```shfunction sj(){
         output="$( sj.py $1 $2)"
         if [ -d "$output" ]; then
                 	cd $output
@@ -27,8 +27,8 @@ then add this to your .bashrc
         fi
 
 
-     }`
-
+     }
+   ```
 
 Now you need to populate the database with the file system folders, do this by providing the -r option
 and a base_path this is the root of the tree that will be in your database. If not specified the home
