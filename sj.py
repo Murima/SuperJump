@@ -31,13 +31,13 @@ class FileSystem(Base):
 
 
 
-    def populate_database(self, session_populate):
+    def populate_database(self, session_populate, base_path):
         """
         Populate the database with the files and
         paths
         """
 
-        base_path=os.path.expanduser('~')
+        base_path=base_path or os.path.expanduser('~')
         for dirpath, dirnames, filnames in os.walk(base_path):
 
             record=FileSystem(path=unicode(dirpath, 'utf8'))
@@ -68,22 +68,19 @@ class FileSystem(Base):
                 new_path = path_obj.group(2)
                 stripped_path = new_path.lstrip()
                 print(stripped_path)
-
+                sys.exit()
 
 
         else:
             print ('path not found')
+            sys.exit()
 
-
-    def change_dir(self, path):
-        ''' prints the path of the directory found in tree and changes to the DIR'''
-        print(path)
 
 if __name__ == '__main__':
     #d = os.path.expanduser('~')
     parser = argparse.ArgumentParser(description = 'small app that super jumps to any path in any level of the file system')
     parser.add_argument('-r', action='store_true', default=False, dest='populate')
-    parser.add_argument('-p', action='store', dest='path')
+    parser.add_argument('path', action='store')
     arg= parser.parse_args()
 
     filesys= FileSystem()
@@ -93,6 +90,7 @@ if __name__ == '__main__':
     find_path= arg.path
     if arg.populate == True:
         Base.metadata.create_all(engine)
-        filesys.populate_database(session)
+        filesys.populate_database(session, arg.path)
 
-    filesys.find_name(find_path, session)
+    elif arg.path:
+        filesys.find_name(find_path, session)
